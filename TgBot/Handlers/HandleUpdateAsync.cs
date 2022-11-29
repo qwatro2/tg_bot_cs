@@ -44,7 +44,16 @@ public partial class Handlers
                     cancellationToken: cancellationToken);
                 break;
             case "/currency":
-                
+                var responseData = await CurrencyParseUtils.GetAllCurrency();
+                string currencyMessage = "Курсы валют:\n";
+                foreach (var pair in responseData.Rates)
+                {
+                    currencyMessage += $"{pair.Key} = {(1 / pair.Value).ToString("F2")}\n";
+                }
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: currencyMessage,
+                    cancellationToken: cancellationToken);
                 break;
             default:
                 return;

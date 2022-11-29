@@ -9,6 +9,7 @@ public static class MathOperationsUtils
             var firstNumber = int.Parse(commandData[1]);
             var secondNumber = int.Parse(commandData[3]);
             var operation = commandData[2];
+
             return operation switch
             {
                 "+" => firstNumber + secondNumber,
@@ -21,7 +22,7 @@ public static class MathOperationsUtils
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return -1;
+            return 0;
         }
     } 
 }
