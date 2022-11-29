@@ -20,7 +20,7 @@ public static class CurrencyParseUtils
         var client = new RestClient("https://api.apilayer.com/exchangerates_data/latest?symbols=USD,EUR,CNY&base=RUB");
         
         var request = new RestRequest();
-        request.AddHeader("apikey", "M2k6HchxTYEU5rJwi83DBewQhOh0GKUT");
+        request.AddHeader("apikey", _currencyToken);
         RestResponse response = await client.ExecuteAsync(request);
         
         var responseData = JsonConvert.DeserializeObject<ResponseCurrencyData>(response.Content);
