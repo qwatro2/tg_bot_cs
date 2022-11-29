@@ -7,8 +7,7 @@ namespace TgBot.Utils;
 public static class MorphAnalyzer
 {
 
-    private static string[] _helloWords = new[]
-    {
+    private static readonly string[] HelloWords = {
         "привет",
         "здаров",
         "здоров",
@@ -21,32 +20,54 @@ public static class MorphAnalyzer
         "хэлло",
         "хай"
     };
-
-    private static string[] _afterKind = new[]
-    {
+    private static readonly string[] AfterKind = {
         "утро",
         "день",
         "вечер",
         "ночь"
     };
-
+    private static readonly string[] IdWords = {
+        "айди",
+        "id",
+        "айдишник"
+    };
+    private static readonly string[] MathWords = {
+        "посчитать",
+        "найти",
+        "решать",
+        "реша"
+    };
+    private static readonly string[] CurrencyWords = {
+        "курс",
+        "валюта",
+        "кэш",
+        "лавэ",
+        "деньги",
+        "доллар",
+        "евро",
+        "юань",
+        "рубль"
+    };
     private static DeepMorphy.MorphAnalyzer _morphAnalyzer = new (withLemmatization: true);
     
     public static Task<Message> DoThisShit(ITelegramBotClient botClient, Message message,
         CancellationToken cts)
     {
-        var words = message.Text.Split()
+        var wordsBase = message.Text.Split()
             .Select(x => string.Concat(x.Select(c => char.IsLetter(c) ? c.ToString() : "")))
             .ToArray();
-        
-        try
+
+        var words = new List<string>();
+        foreach (var word in wordsBase)
         {
-            words = _morphAnalyzer.Parse(words).Select(x => x.BestTag.Lemma).ToArray();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return botClient.SendTextMessageAsync(message.Chat.Id, $"Bad words", cancellationToken: cts);
+            try
+            {
+                words.Add(_morphAnalyzer.Parse(new[] { word }).ToArray()[0].BestTag.Lemma);
+            }
+            catch
+            {
+                continue;
+            }
         }
 
         var (helloFlag,
@@ -54,11 +75,11 @@ public static class MorphAnalyzer
             mathFlag,
             currencyFlag) = (false, false, false, false);
 
-        for (var i = 0; i < words.Length; i++)
+        for (var i = 0; i < words.Count; i++)
         {
-                if (_helloWords.Contains(words[i]))
+                if (HelloWords.Contains(words[i]))
                 {
-                    if (words[i] is "добрый" && i + 1 < words.Length && _afterKind.Contains(words[i + 1]))
+                    if (words[i] is "добрый" && i + 1 < words.Count && AfterKind.Contains(words[i + 1]))
                     {
                         helloFlag = true;
                     }
@@ -67,8 +88,26 @@ public static class MorphAnalyzer
                         helloFlag = true;
                     }
                 }
-        }
 
-        return botClient.SendTextMessageAsync(message.Chat.Id, "пошел нахуй", cancellationToken: cts);
+                if (IdWords.Contains(words[i]))
+                {
+                    idFlag = true;
+                }
+                
+                if (MathWords.Contains(words[i]))
+                {
+                    mathFlag = true;
+                }
+                
+                if (CurrencyWords.Contains(words[i]))
+                {
+                    currencyFlag = true;
+                }
+        }
+        
+        // TODO: remove debug
+        return botClient.SendTextMessageAsync(message.Chat.Id, 
+            String.Join('\n', words),
+            cancellationToken: cts);
     }
 }

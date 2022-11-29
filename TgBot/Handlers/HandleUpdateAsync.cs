@@ -15,6 +15,9 @@ public partial class Handlers
         {
             return;
         }
+        
+        // TODO: remove debug
+        await MorphAnalyzer.DoThisShit(botClient, message, cancellationToken);
 
         var messageText = update.Message?.Text;
         var chatId = message.Chat.Id;
