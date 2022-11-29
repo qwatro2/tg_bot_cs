@@ -1,18 +1,16 @@
 ﻿using Telegram.Bot;
-using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace TgBot;
 
-class Program
+static class Program
 {
     public static async Task Main()
     {
         var token = Environment.GetEnvironmentVariable("token") ?? throw new Exception("Token missing");
         var client = new TelegramBotClient(token);
-        var handlers = new Handlers();
+        var handlers = new Handlers.Handlers();
 
         using var cts = new CancellationTokenSource();
         var receiverOptions = new ReceiverOptions
