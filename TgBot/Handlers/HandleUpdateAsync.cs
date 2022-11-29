@@ -27,7 +27,7 @@ public partial class Handlers
             case "/hello":
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: $"Привет, {message.From.Username}!",
+                    text: $"Привет, {message.From.FirstName}!",
                     cancellationToken: cancellationToken);
                 break;
             case "/id":
