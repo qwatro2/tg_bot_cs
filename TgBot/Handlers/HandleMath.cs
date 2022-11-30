@@ -11,12 +11,22 @@ public partial class Handlers
     {
         var chatId = message.Chat.Id;
         
-        var commandData = message.Text.Split(' ');
-        int result = MathOperationsUtils.DoOperations(commandData);
+        var (result, isValid) = MathOperationsUtils.DoOperations(message);
+
+        if (isValid)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: $"Результат вычислений - {result}",
+                cancellationToken: cancellationToken);
+        }
+        else
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: $"Не получилось распарсить пример!",
+                cancellationToken: cancellationToken);
+        }
         
-        await botClient.SendTextMessageAsync(
-            chatId: chatId,
-            text: $"Результат - {result}!",
-            cancellationToken: cancellationToken);
     }
 }
