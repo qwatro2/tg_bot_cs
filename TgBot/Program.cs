@@ -8,6 +8,7 @@ static class Program
 {
     public static async Task Main()
     {
+        Console.WriteLine("Bot starting...");
         var token = Environment.GetEnvironmentVariable("token") ?? throw new Exception("Token missing");
         var client = new TelegramBotClient(token);
         var handlers = new Handlers.Handlers();
@@ -17,15 +18,12 @@ static class Program
         {
             AllowedUpdates = Array.Empty<UpdateType>()
         };
+        Console.WriteLine("Bot was started!");
             
-        client.StartReceiving(updateHandler: handlers.HandleUpdateAsync,
+        await client.ReceiveAsync(updateHandler: handlers.HandleUpdateAsync,
             pollingErrorHandler: handlers.HandlePollingErrorAsync,
             receiverOptions: receiverOptions,
             cancellationToken: cts.Token);
-
-        var me = await client.GetMeAsync(cancellationToken: cts.Token);
-        Console.WriteLine($"Start listening for @{me.Username}");
-        Console.ReadLine();
 
         cts.Cancel();
     }
