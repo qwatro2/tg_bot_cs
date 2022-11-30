@@ -16,7 +16,7 @@ public partial class Handlers
             return;
         }
 
-        HashSet<OperationFlag> operationFlags = MorphAnalyzer.DoThisShit(message);
+        HashSet<OperationFlag> operationFlags = MorphAnalyzer.GetOperations(message);
 
         foreach (var operationFlag in operationFlags)
         {

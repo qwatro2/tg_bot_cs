@@ -67,7 +67,7 @@ public static class MorphAnalyzer
 
     private static DeepMorphy.MorphAnalyzer _morphAnalyzer = new(withLemmatization: true);
 
-    public static HashSet<OperationFlag> DoThisShit(Message message)
+    public static HashSet<OperationFlag> GetOperations(Message message)
     {
         var wordsBase = message.Text.Split()
             .Select(x => string.Concat(x.Select(c => char.IsLetter(c) ? c.ToString() : "")))
