@@ -4,10 +4,18 @@ using Telegram.Bot.Types;
 
 namespace TgBot.Utils;
 
+public enum OperationFlag
+{
+    HelloFlag,
+    IdFlag,
+    MathFlag,
+    CurrencyFlag
+}
+
 public static class MorphAnalyzer
 {
-
-    private static readonly string[] HelloWords = {
+    private static readonly string[] HelloWords =
+    {
         "привет",
         "здаров",
         "здоров",
@@ -20,24 +28,32 @@ public static class MorphAnalyzer
         "хэлло",
         "хай"
     };
-    private static readonly string[] AfterKind = {
+
+    private static readonly string[] AfterKind =
+    {
         "утро",
         "день",
         "вечер",
         "ночь"
     };
-    private static readonly string[] IdWords = {
+
+    private static readonly string[] IdWords =
+    {
         "айди",
         "id",
         "айдишник"
     };
-    private static readonly string[] MathWords = {
+
+    private static readonly string[] MathWords =
+    {
         "посчитать",
         "найти",
         "решать",
         "реша"
     };
-    private static readonly string[] CurrencyWords = {
+
+    private static readonly string[] CurrencyWords =
+    {
         "курс",
         "валюта",
         "кэш",
@@ -48,10 +64,10 @@ public static class MorphAnalyzer
         "юань",
         "рубль"
     };
-    private static DeepMorphy.MorphAnalyzer _morphAnalyzer = new (withLemmatization: true);
-    
-    public static Task<Message> DoThisShit(ITelegramBotClient botClient, Message message,
-        CancellationToken cts)
+
+    private static DeepMorphy.MorphAnalyzer _morphAnalyzer = new(withLemmatization: true);
+
+    public static HashSet<OperationFlag> DoThisShit(Message message)
     {
         var wordsBase = message.Text.Split()
             .Select(x => string.Concat(x.Select(c => char.IsLetter(c) ? c.ToString() : "")))
@@ -70,44 +86,39 @@ public static class MorphAnalyzer
             }
         }
 
-        var (helloFlag,
-            idFlag,
-            mathFlag,
-            currencyFlag) = (false, false, false, false);
+        var operationSet = new HashSet<OperationFlag>();
 
         for (var i = 0; i < words.Count; i++)
         {
-                if (HelloWords.Contains(words[i]))
+            if (HelloWords.Contains(words[i]))
+            {
+                if (words[i] is "добрый" && i + 1 < words.Count && AfterKind.Contains(words[i + 1]))
                 {
-                    if (words[i] is "добрый" && i + 1 < words.Count && AfterKind.Contains(words[i + 1]))
-                    {
-                        helloFlag = true;
-                    }
-                    else if (words[i] is not "добрый")
-                    {
-                        helloFlag = true;
-                    }
+                    operationSet.Add(OperationFlag.HelloFlag);
                 }
+                else if (words[i] is not "добрый")
+                {
+                    operationSet.Add(OperationFlag.HelloFlag);
+                }
+            }
 
-                if (IdWords.Contains(words[i]))
-                {
-                    idFlag = true;
-                }
-                
-                if (MathWords.Contains(words[i]))
-                {
-                    mathFlag = true;
-                }
-                
-                if (CurrencyWords.Contains(words[i]))
-                {
-                    currencyFlag = true;
-                }
+            if (IdWords.Contains(words[i]))
+            {
+                operationSet.Add(OperationFlag.IdFlag);
+            }
+
+            if (MathWords.Contains(words[i]))
+            {
+                operationSet.Add(OperationFlag.MathFlag);
+            }
+
+            if (CurrencyWords.Contains(words[i]))
+            {
+                operationSet.Add(OperationFlag.CurrencyFlag);
+            }
         }
-        
+
         // TODO: remove debug
-        return botClient.SendTextMessageAsync(message.Chat.Id, 
-            String.Join('\n', words),
-            cancellationToken: cts);
+        return operationSet;
     }
 }

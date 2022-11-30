@@ -5,7 +5,8 @@ namespace TgBot.Handlers;
 
 public partial class Handlers
 {
-    private static string[] _helloWords = {
+    private static string[] _helloWords =
+    {
         "привет",
         "здаров",
         "здоров",
@@ -18,10 +19,11 @@ public partial class Handlers
         "хэлло",
         "хай"
     };
-    
-    public Task HandleGreetings(ITelegramBotClient botClient, Message message,
+
+    private async Task HandleGreetings(ITelegramBotClient botClient, Message message,
         CancellationToken cancellationToken)
     {
+        var chatId = message.Chat.Id;
         var greeting = _helloWords[new Random().Next(_helloWords.Length)];
 
         if (greeting is "приветствовать")
@@ -30,10 +32,10 @@ public partial class Handlers
         }
         else if (greeting[^3..] is "ров")
         {
-            greeting = greeting + "a";
+            greeting += "a";
         }
-            
-        return botClient.SendTextMessageAsync(message.Chat.Id, 
+
+        await botClient.SendTextMessageAsync(chatId,
             $"{char.ToUpper(greeting[0]) + greeting.Substring(1)}, " +
             $"{message.From.FirstName}",
             cancellationToken: cancellationToken);

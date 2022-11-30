@@ -15,51 +15,28 @@ public partial class Handlers
         {
             return;
         }
-        
-        // TODO: remove debug
-        await MorphAnalyzer.DoThisShit(botClient, message, cancellationToken);
 
-        var messageText = update.Message?.Text;
-        var chatId = message.Chat.Id;
+        HashSet<OperationFlag> operationFlags = MorphAnalyzer.DoThisShit(message);
 
-        var commandData = messageText.Split(' ');
-        var command = commandData[0];
-
-        switch (command)
+        foreach (var operationFlag in operationFlags)
         {
-            case "/hello":
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Привет, {message.From.FirstName}!",
-                    cancellationToken: cancellationToken);
-                break;
-            case "/id":
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Ваш ID - {message.From.Id}!",
-                    cancellationToken: cancellationToken);
-                break;
-            case "/math":
-                int result = MathOperationsUtils.DoOperations(commandData);
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: $"Результат - {result}!",
-                    cancellationToken: cancellationToken);
-                break;
-            case "/currency":
-                var responseData = await CurrencyParseUtils.GetAllCurrency();
-                string currencyMessage = "Курсы валют:\n";
-                foreach (var pair in responseData.Rates)
-                {
-                    currencyMessage += $"{pair.Key} = {(1 / pair.Value).ToString("F2")}\n";
-                }
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: currencyMessage,
-                    cancellationToken: cancellationToken);
-                break;
-            default:
-                return;
+            switch (operationFlag)
+            {
+                case OperationFlag.HelloFlag:
+                    await HandleGreetings(botClient, message, cancellationToken);
+                    break;
+                case OperationFlag.IdFlag:
+                    await HandleId(botClient, message, cancellationToken);
+                    break;
+                case OperationFlag.MathFlag:
+                    await HandleMath(botClient, message, cancellationToken);
+                    break;
+                case OperationFlag.CurrencyFlag:
+                    await HandleCurrency(botClient, message, cancellationToken);
+                    break;
+                default:
+                    return;
+            }
         }
     }
 }
