@@ -1,9 +1,14 @@
-﻿using Telegram.Bot.Types;
+﻿using System.Text.RegularExpressions;
+using AngouriMath;
+using Telegram.Bot.Types;
 
 namespace TgBot.Utils;
 
 public static class MathOperationsUtils
 {
+    private const string Pattern = @"((?:\d*\.)?\d+)(\s*)([\^\+\-\*\/])(\s*)((?:\d*\.)?\d+)";
+
+    /* старая версия
     public static (int, bool) DoOperations(Message message)
     {
         var allMessageWords = message.Text.Split(' ');
@@ -73,4 +78,19 @@ public static class MathOperationsUtils
             _ => (int.MinValue, false)
         };
     }
+    */
+    
+    public static List<string> DoOperationsV2(Message? message)
+    {
+        if (message?.Text is null)
+        {
+            return new List<string>();
+        }
+
+        var text = message.Text;
+        var exps = Regex.Matches(text, Pattern).Select(x => x.Value).ToList();
+        var results = exps.Select(x => ((Entity)x).EvalNumerical()).ToList();
+        return exps.Select((t, i) => $"{t} = {results[i]}").ToList();
+    }
+
 }

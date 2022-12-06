@@ -10,6 +10,15 @@ public partial class Handlers
     {
         var chatId = message.Chat.Id;
 
+        if (message.From is null)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Ошибка при обработке сообщения",
+                cancellationToken: cancellationToken);
+            return;
+        }
+
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: $"Ваш ID - {message.From.Id}",

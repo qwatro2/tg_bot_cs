@@ -1,6 +1,4 @@
-﻿using DeepMorphy.Model;
-using Telegram.Bot;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
 namespace TgBot.Utils;
 
@@ -65,11 +63,11 @@ public static class MorphAnalyzer
         "рубль"
     };
 
-    private static DeepMorphy.MorphAnalyzer _morphAnalyzer = new(withLemmatization: true);
+    private static readonly DeepMorphy.MorphAnalyzer StaticMorphAnalyzer = new(withLemmatization: true);
 
-    public static HashSet<OperationFlag> GetOperations(Message message)
+    public static HashSet<OperationFlag> GetOperations(Message? message)
     {
-        if (message is null || message.Text is null)
+        if (message?.Text is null)
         {
             return new HashSet<OperationFlag>();
         }
@@ -83,7 +81,7 @@ public static class MorphAnalyzer
         {
             try
             {
-                words.Add(_morphAnalyzer.Parse(new[] { word }).ToArray()[0].BestTag.Lemma);
+                words.Add(StaticMorphAnalyzer.Parse(new[] { word }).ToArray()[0].BestTag.Lemma);
             }
             catch
             {

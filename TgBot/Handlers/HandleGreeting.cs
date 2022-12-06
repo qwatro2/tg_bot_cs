@@ -5,7 +5,7 @@ namespace TgBot.Handlers;
 
 public partial class Handlers
 {
-    private static string[] _helloWords =
+    private static readonly string[] HelloWords =
     {
         "привет",
         "здаров",
@@ -24,7 +24,7 @@ public partial class Handlers
         CancellationToken cancellationToken)
     {
         var chatId = message.Chat.Id;
-        var greeting = _helloWords[new Random().Next(_helloWords.Length)];
+        var greeting = HelloWords[new Random().Next(HelloWords.Length)];
 
         if (greeting is "приветствовать")
         {
@@ -35,6 +35,15 @@ public partial class Handlers
             greeting += "a";
         }
 
+        if (message.From is null)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Ошибка при обработке сообщения",
+                cancellationToken: cancellationToken);
+            return;
+        }
+        
         await botClient.SendTextMessageAsync(chatId,
             $"{char.ToUpper(greeting[0]) + greeting[1..]}, " +
             $"{message.From.FirstName}",

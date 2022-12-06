@@ -12,11 +12,18 @@ public partial class Handlers
         var chatId = message.Chat.Id;
         
         var responseData = await CurrencyParseUtils.GetAllCurrency();
-        var currencyMessage = "Курсы валют:\n";
-        foreach (var pair in responseData.Rates)
+
+        if (responseData?.Rates is null)
         {
-            currencyMessage += $"{pair.Key} = {(1 / pair.Value):F2}\n";
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Ошибка при получении курса!",
+                cancellationToken: cancellationToken);
+            return;
         }
+        
+        var currencyMessage = responseData.Rates
+            .Aggregate("Курсы валют:\n", (current, pair) => current + $"{pair.Key} = {(1 / pair.Value):F2}\n");
 
         await botClient.SendTextMessageAsync(
             chatId: chatId,

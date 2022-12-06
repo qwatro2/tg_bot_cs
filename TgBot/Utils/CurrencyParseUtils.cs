@@ -23,6 +23,11 @@ public static class CurrencyParseUtils
         var request = new RestRequest();
         request.AddHeader("apikey", CurrencyToken);
         var response = await client.ExecuteAsync(request);
+
+        if (response.Content is null)
+        {
+            return null;
+        }
         
         var responseData = JsonConvert.DeserializeObject<ResponseCurrencyData>(response.Content);
         return responseData;
