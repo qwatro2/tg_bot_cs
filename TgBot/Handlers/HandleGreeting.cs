@@ -28,7 +28,7 @@ public partial class Handlers
 
         if (greeting is "приветствовать")
         {
-            greeting = "приветсвтую";
+            greeting = "приветствую";
         }
         else if (greeting[^3..] is "ров")
         {
@@ -36,7 +36,7 @@ public partial class Handlers
         }
 
         await botClient.SendTextMessageAsync(chatId,
-            $"{char.ToUpper(greeting[0]) + greeting.Substring(1)}, " +
+            $"{char.ToUpper(greeting[0]) + greeting[1..]}, " +
             $"{message.From.FirstName}",
             cancellationToken: cancellationToken);
     }

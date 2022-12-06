@@ -12,10 +12,10 @@ public partial class Handlers
         var chatId = message.Chat.Id;
         
         var responseData = await CurrencyParseUtils.GetAllCurrency();
-        string currencyMessage = "Курсы валют:\n";
+        var currencyMessage = "Курсы валют:\n";
         foreach (var pair in responseData.Rates)
         {
-            currencyMessage += $"{pair.Key} = {(1 / pair.Value).ToString("F2")}\n";
+            currencyMessage += $"{pair.Key} = {(1 / pair.Value):F2}\n";
         }
 
         await botClient.SendTextMessageAsync(

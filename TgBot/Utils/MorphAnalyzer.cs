@@ -82,7 +82,7 @@ public static class MorphAnalyzer
             }
             catch
             {
-                continue;
+                // ignored
             }
         }
 
@@ -118,7 +118,6 @@ public static class MorphAnalyzer
             }
         }
 
-        // TODO: remove debug
         return operationSet;
     }
 }

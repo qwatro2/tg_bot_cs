@@ -7,11 +7,11 @@ public static class MathOperationsUtils
     public static (int, bool) DoOperations(Message message)
     {
         var allMessageWords = message.Text.Split(' ');
-        var operations = new List<char>() { '+', '-', '*', '/' };
+        var operations = new List<char> { '+', '-', '*', '/' };
 
-        int operationIndex = -1;
-        char usingOperation = '.';
-        for (int i = 0; i < allMessageWords.Length; i++)
+        var operationIndex = -1;
+        var usingOperation = '.';
+        for (var i = 0; i < allMessageWords.Length; i++)
         {
             foreach (var operation in operations)
             {
@@ -70,6 +70,7 @@ public static class MathOperationsUtils
             '-' => (firstNumber - secondNumber, true),
             '*' => (firstNumber * secondNumber, true),
             '/' => (firstNumber / secondNumber, true),
+            _ => (int.MinValue, false)
         };
     }
 }
