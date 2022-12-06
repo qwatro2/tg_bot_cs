@@ -69,6 +69,11 @@ public static class MorphAnalyzer
 
     public static HashSet<OperationFlag> GetOperations(Message message)
     {
+        if (message is null || message.Text is null)
+        {
+            return new HashSet<OperationFlag>();
+        }
+        
         var wordsBase = message.Text.Split()
             .Select(x => string.Concat(x.Select(c => char.IsLetter(c) ? c.ToString() : "")))
             .ToArray();
