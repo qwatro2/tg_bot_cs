@@ -11,7 +11,12 @@ public partial class Handlers
     {
         var message = update.Message;
 
-        if (update.Message.From.IsBot)
+        if (message?.From is null)
+        {
+            return;
+        }
+
+        if (message.From.IsBot)
         {
             return;
         }
