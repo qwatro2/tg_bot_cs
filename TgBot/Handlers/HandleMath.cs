@@ -16,25 +16,6 @@ public partial class Handlers
             return;
         }
         
-        /* старый варик
-        var (result, isValid) = MathOperationsUtils.DoOperations(message);
-
-        if (isValid)
-        {
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Результат вычислений - {result}",
-                cancellationToken: cancellationToken);
-        }
-        else
-        {
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: $"Не получилось распарсить пример!",
-                cancellationToken: cancellationToken);
-        }
-        */
-
         var strings = MathOperationsUtils.DoOperationsV2(message);
 
         if (strings.Count is 0)
