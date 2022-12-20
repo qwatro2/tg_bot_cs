@@ -1,11 +1,11 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace TgBot.Handlers;
+namespace TgBot.Handlers.TextHandlers;
 
-public partial class Handlers
+public class HandleId : ITextHandler
 {
-    private async Task HandleId(ITelegramBotClient botClient, Message message,
+    public async Task SendMessage(ITelegramBotClient botClient, Message message,
         CancellationToken cancellationToken)
     {
         var chatId = message.Chat.Id;

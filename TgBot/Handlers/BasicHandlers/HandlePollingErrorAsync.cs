@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 
-namespace TgBot.Handlers;
+namespace TgBot.Handlers.BasicHandlers;
 
 public partial class Handlers
 {

@@ -11,7 +11,7 @@ static class Program
         Console.WriteLine("Bot starting...");
         var token = Environment.GetEnvironmentVariable("token") ?? throw new Exception("Token missing");
         var client = new TelegramBotClient(token);
-        var handlers = new Handlers.Handlers();
+        var handlers = new Handlers.BasicHandlers.Handlers();
 
         using var cts = new CancellationTokenSource();
         var receiverOptions = new ReceiverOptions
